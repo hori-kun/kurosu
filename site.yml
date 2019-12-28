@@ -1,0 +1,5 @@
+---
+
+- hosts: kurosu
+  roles:
+    - { role: tty, tags: ['tty'] }

@@ -1,0 +1,2 @@
+[kurosu]
+penguin ansible_connection=local

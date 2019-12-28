@@ -1,0 +1,24 @@
+---
+
+- name: Create home directory structure
+  file:
+    path: "{{ lookup('env', 'HOME') }}/{{ item }}"
+    state: directory
+  with_items:
+    - .cache
+    - .config
+    - .local/bin
+    - .local/lib
+    - .local/share
+
+- name: Get Alacritty
+  unarchive:
+    src: "https://github.com/jwilm/alacritty/releases/download/v{{ alacritty.version }}/Alacritty-v{{ alacritty.version }}-ubuntu_18_04_amd64.tar.gz"
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin"
+    remote_src: yes
+
+- name: Create Alacritty configuration directory
+  file:
+    path: "{{ lookup('env', 'XDG_CONFIG_HOME') }}/alacritty"
+    state: directory
+    
