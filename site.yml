@@ -2,4 +2,5 @@
 
 - hosts: kurosu
   roles:
+    - { role: common, tags: ['common'] }
     - { role: tty, tags: ['tty'] }

@@ -19,7 +19,7 @@ $ sudo apt install ansible
 ```
 
 ## Usage
-Simply run the following command:
+Simply run the following command to configure your system with Kuroso.
 
 ```
 $ ansible-playbook site.yml

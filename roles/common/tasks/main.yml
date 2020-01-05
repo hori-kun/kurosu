@@ -1,0 +1,12 @@
+---
+
+- name: Create home directory structure
+  file:
+    path: "{{ lookup('env', 'HOME') }}/{{ item }}"
+    state: directory
+  with_items:
+    - .cache
+    - .config
+    - .local/bin
+    - .local/lib
+    - .local/share

@@ -1,0 +1,23 @@
+---
+
+- name: Reload systemd manager configuration
+  systemd:
+    daemon_reload: yes
+    scope: user
+  listen: Restart Sommelier
+
+- name: Restart Sommelier services
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    scope: user
+  with_items:
+    - sommelier@0.service
+    - sommelier-x@0.service
+  listen: Restart Sommelier
+
+- name: Ensure terminal absent
+  apt:
+    name: gnome-terminal
+    state: absent
+  become: yes

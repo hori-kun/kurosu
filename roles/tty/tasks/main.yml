@@ -1,24 +1,37 @@
 ---
 
-- name: Create home directory structure
-  file:
-    path: "{{ lookup('env', 'HOME') }}/{{ item }}"
-    state: directory
+- name: Configure Sommelier accelerators
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    owner: root
+    group: root
+  become: yes
   with_items:
-    - .cache
-    - .config
-    - .local/bin
-    - .local/lib
-    - .local/share
+    - { src: cros-sommelier-override.conf, dest: /etc/systemd/user/sommelier@0.service.d/ }
+    - { src: cros-sommelier-x-override.conf, dest: /etc/systemd/user/sommelier-x@0.service.d/ }
+  notify: Restart Sommelier
 
-- name: Get Alacritty
-  unarchive:
-    src: "https://github.com/jwilm/alacritty/releases/download/v{{ alacritty.version }}/Alacritty-v{{ alacritty.version }}-ubuntu_18_04_amd64.tar.gz"
-    dest: "{{ lookup('env', 'HOME') }}/.local/bin"
-    remote_src: yes
+- name: Copy terminal icon
+  copy:
+    src: utilities-terminal.png
+    dest: "{{ lookup('env', 'HOME') }}/.local/share/icons/gnome/128x128/apps/"
+  register: icon
 
-- name: Create Alacritty configuration directory
-  file:
-    path: "{{ lookup('env', 'XDG_CONFIG_HOME') }}/alacritty"
-    state: directory
-    
+- name: Ensure terminal absent when icon changed
+  apt:
+    name: gnome-terminal
+    state: absent
+  when: icon.changed
+
+- name: Copy terminal desktop file
+  copy:
+    src: org.gnome.Terminal.desktop
+    dest: "{{ lookup('env', 'HOME') }}/.local/share/applications/"
+
+- name: Install terminal
+  apt:
+    name: gnome-terminal
+    state: present
+  become: yes
